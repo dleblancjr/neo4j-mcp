@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from operations.search_operations import SearchOperations
+from neo4j_mcp.operations.search_operations import SearchOperations
 
 
 class TestSearchOperations(IsolatedAsyncioTestCase):  # Changed base class

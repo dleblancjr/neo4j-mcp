@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from operations.observation_operations import ObservationOperations
+from neo4j_mcp.operations.observation_operations import ObservationOperations
 
 
 class TestObservationOperations(IsolatedAsyncioTestCase):  # Changed base class

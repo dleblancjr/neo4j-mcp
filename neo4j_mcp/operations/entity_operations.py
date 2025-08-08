@@ -37,7 +37,7 @@ class EntityOperations:
             labels = arguments.get("labels", [])
             
             # Validate required properties
-            from utils import validate_entity_properties
+            from ..utils import validate_entity_properties
             is_valid, error_msg = validate_entity_properties(properties)
             if not is_valid:
                 # Normalize message to test expectation wording
