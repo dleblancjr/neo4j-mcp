@@ -6,7 +6,11 @@ Setup script for the Neo4j MCP server.
 import subprocess
 import sys
 import os
-from dotenv import load_dotenv
+# Optional import of dotenv; guarded to avoid build-time failure
+try:
+    from dotenv import load_dotenv  # type: ignore
+except ImportError:
+    load_dotenv = None  # type: ignore
 
 def run_command(command, description):
     """Run a command and handle errors."""
@@ -46,8 +50,9 @@ def main():
         if os.path.exists(script):
             run_command(f"chmod +x {script}", f"Making {script} executable")
             
-    # Load environment variables
-    load_dotenv()        
+    # Load environment variables if dotenv available
+    if load_dotenv is not None:
+        load_dotenv(override=True)
     
     print("\n" + "=" * 50)
     print("✓ Setup completed successfully!")
@@ -58,4 +63,4 @@ def main():
     print("\nFor more information, see README.md")
 
 if __name__ == "__main__":
-    main() 
+    main()
