@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from operations.entity_operations import EntityOperations
+from neo4j_mcp.operations.entity_operations import EntityOperations
 
 
 class TestEntityOperations(IsolatedAsyncioTestCase):  # Changed base class

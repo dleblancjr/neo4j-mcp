@@ -19,9 +19,9 @@ from mcp.types import CallToolResult, ListToolsResult
 from pydantic import ValidationError  # New import for benign suppression
 from anyio import BrokenResourceError  # New import for benign suppression
 
-from tools import get_all_tools
-from database import Neo4jOperations
-from operations import SearchOperations, EntityOperations, RelationshipOperations, ObservationOperations
+from .tools import get_all_tools
+from .database import Neo4jOperations
+from .operations import SearchOperations, EntityOperations, RelationshipOperations, ObservationOperations
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
