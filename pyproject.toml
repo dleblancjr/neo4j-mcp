@@ -29,4 +29,4 @@ dependencies = [
 ]
 
 [project.scripts]
-neo4j-mcp = "neo4j_mcp.server:main"
+neo4j-mcp = "neo4j_mcp.server:run_main"

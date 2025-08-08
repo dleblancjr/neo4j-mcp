@@ -357,9 +357,13 @@ async def main():
             logger.debug(f"Error during disconnect: {e}")
         logger.info("Server shutdown complete.")
 
-if __name__ == "__main__":
+def run_main():
+    """Synchronous entry point for the console script."""
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         # Extra safeguard if interrupt happens outside main loop phases
         logger.info("Interrupted. Exiting.")
+
+if __name__ == "__main__":
+    run_main()
