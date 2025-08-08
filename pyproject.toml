@@ -5,9 +5,20 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "neo4j-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Neo4j MCP Server - A Model Context Protocol server for Neo4j database operations"
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [
+    {name = "dleblancjr", email = "dleblancjr@gmail.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     # Pin to major version 1 for mcp until v2
     "mcp>=1.12.4,<2.0.0",
@@ -16,3 +27,6 @@ dependencies = [
     # Needed at build/runtime for setup.py and server env loading
     "python-dotenv>=1.0.0,<2.0.0",
 ]
+
+[project.scripts]
+neo4j-mcp = "server:main"
