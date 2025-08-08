@@ -1,0 +1,12 @@
+[project]
+name = "neo4j-mcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    # Pin to major version 1 for mcp until v2
+    "mcp>=1.12.4,<2.0.0",
+    # Pin to major version 5 for neo4j driver until v6
+    "neo4j>=5.28.2,<6.0.0",
+]
