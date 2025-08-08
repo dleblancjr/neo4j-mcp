@@ -186,12 +186,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "mcp" },
     { name = "neo4j" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "mcp", specifier = ">=1.12.4" },
-    { name = "neo4j", specifier = ">=5.28.2" },
+    { name = "mcp", specifier = ">=1.12.4,<2.0.0" },
+    { name = "neo4j", specifier = ">=5.28.2,<6.0.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0,<2.0.0" },
 ]
 
 [[package]]
