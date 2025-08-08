@@ -6,6 +6,6 @@ __version__ = "0.1.0"
 __author__ = "dleblancjr"
 __email__ = "dleblancjr@gmail.com"
 
-from .server import main
+from .server import main, run_main
 
-__all__ = ["main"]
+__all__ = ["main", "run_main"]
