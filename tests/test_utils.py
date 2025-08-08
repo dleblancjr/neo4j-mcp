@@ -11,7 +11,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils.validators import (
+from neo4j_mcp.utils.validators import (
     validate_confidence,
     validate_entity_properties
 )

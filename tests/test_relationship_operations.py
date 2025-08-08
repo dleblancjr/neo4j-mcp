@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from operations.relationship_operations import RelationshipOperations
+from neo4j_mcp.operations.relationship_operations import RelationshipOperations
 
 
 class TestRelationshipOperations(IsolatedAsyncioTestCase):  # Changed base class

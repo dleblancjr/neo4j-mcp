@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from server import Neo4jMCPServer, main  # noqa: E402
+from neo4j_mcp.server import Neo4jMCPServer, main  # noqa: E402
 
 
 class TestNeo4jMCPServer(unittest.TestCase):

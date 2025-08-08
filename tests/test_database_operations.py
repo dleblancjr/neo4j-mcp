@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database.operations import Neo4jOperations
+from neo4j_mcp.database.operations import Neo4jOperations
 
 
 class TestNeo4jOperations(IsolatedAsyncioTestCase):  # Changed base class for async tests

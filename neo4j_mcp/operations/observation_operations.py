@@ -45,7 +45,7 @@ class ObservationOperations:
                 timestamp = datetime.now().isoformat()
             
             # Validate confidence if provided
-            from utils import validate_confidence
+            from ..utils import validate_confidence
             is_valid, error_msg = validate_confidence(confidence)
             if not is_valid:
                 return CallToolResult(

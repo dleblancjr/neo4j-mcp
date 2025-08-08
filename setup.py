@@ -24,7 +24,7 @@ if __name__ == "__main__":
         ],
         entry_points={
             "console_scripts": [
-                "neo4j-mcp=server:main",
+                "neo4j-mcp=neo4j_mcp.server:main",
             ],
         },
         classifiers=[
