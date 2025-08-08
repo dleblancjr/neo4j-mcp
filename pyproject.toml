@@ -9,4 +9,6 @@ dependencies = [
     "mcp>=1.12.4,<2.0.0",
     # Pin to major version 5 for neo4j driver until v6
     "neo4j>=5.28.2,<6.0.0",
+    # Needed at build/runtime for setup.py and server env loading
+    "python-dotenv>=1.0.0,<2.0.0",
 ]
