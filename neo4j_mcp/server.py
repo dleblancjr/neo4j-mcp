@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional
 from mcp.server import Server, NotificationOptions
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
-from mcp.types import CallToolResult, ListToolsResult
+from mcp.types import CallToolResult, ListToolsResult, Tool
 from pydantic import ValidationError  # New import for benign suppression
 from anyio import BrokenResourceError  # New import for benign suppression
 
@@ -78,11 +78,13 @@ class Neo4jMCPServer:
 
     def setup_handlers(self):
         """Setup MCP server handlers."""
-        
         @self.server.list_tools()
-        async def handle_list_tools() -> ListToolsResult:
-            """List available tools."""
-            return ListToolsResult(tools=get_all_tools())
+        async def handle_list_tools():  # returns list[Tool]
+            raw = get_all_tools()
+            logger.debug("Raw get_all_tools() returned %d items", len(raw))
+            for i, obj in enumerate(raw):
+                logger.debug("raw[%d]: type=%s repr=%r", i, type(obj), obj)
+            return raw
         
         @self.server.call_tool()
         async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> CallToolResult:
@@ -348,6 +350,30 @@ async def main():
                         init_options,
                     )
                     logger.debug("server.run completed normally (no more incoming requests)")
+
+                    # Some mcp server implementations return after initialization only; continue serving.
+                    if not stop_event.is_set():
+                        logger.debug("Entering post-initialize serve loop waiting for further client requests...")
+                        # Best-effort loop until EOF or stop_event
+                        while not stop_event.is_set():
+                            try:
+                                msg = await read_stream.receive()
+                            except Exception as e:  # noqa: BLE001
+                                logger.debug("Read loop terminating due to exception: %r (%s)", e, type(e).__name__)
+                                break
+                            if msg is None:  # EOF
+                                logger.debug("Read loop received EOF; ending serve loop.")
+                                break
+                            logger.debug("Dispatching post-init message: %s", msg)
+                            handler = getattr(neo4j_server.server, "_handle_message", None)
+                            if handler is None:
+                                logger.warning("Server internal handler not found; cannot dispatch further messages.")
+                                break
+                            try:
+                                await handler(msg, write_stream)  # type: ignore[arg-type]
+                            except Exception as e:  # noqa: BLE001
+                                logger.error("Error dispatching message %s: %s", msg, e)
+                                break
                 except Exception as e:  # noqa: BLE001
                     logger.error("server.run raised exception: %s", e)
                     raise
@@ -365,6 +391,13 @@ async def main():
                     await server_task
                 except asyncio.CancelledError:
                     logger.debug("Server task cancelled during shutdown.")
+            if server_task in done and stop_task not in done:
+                # Server task ended on its own before a shutdown signal
+                logger.warning("server.run task ended before stop signal; this is unexpected. Inspecting result...")
+                if server_task.exception():
+                    logger.error("server.run task exception: %s", server_task.exception())
+                else:
+                    logger.warning("server.run completed cleanly with no stop signal (possible premature exit)")
     except BaseExceptionGroup as eg:  # Python 3.11+ aggregated exceptions (e.g., from anyio TaskGroup)
         # Suppress benign termination / parse noise when no proper JSON-RPC client is attached.
         benign = (ValidationError, BrokenResourceError)
