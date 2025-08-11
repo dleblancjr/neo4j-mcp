@@ -144,6 +144,9 @@ class Neo4jMCPServer:
                 content=[{"type": "text", "text": f"Unknown tool: {name}"}],
                 isError=True
             )
+        
+    # Log once handlers have been set up (useful to confirm readiness before initialize)
+    logger.debug("All tool handlers registered; awaiting client initialize request...")
 
     async def connect_neo4j(self, arguments: Dict[str, Any]) -> CallToolResult:
         """Connect or reconnect to Neo4j applying force semantics.
@@ -316,6 +319,18 @@ async def main():
     try:
         # NOTE: Do not write to stdout directly (only JSON-RPC). All diagnostics must go via logging (stderr).
         async with stdio_server() as (read_stream, write_stream):
+            # Wrap streams for debugging first message flow
+            original_receive = read_stream.receive
+            async def debug_receive():
+                msg = await original_receive()
+                logger.debug("Raw incoming JSON-RPC: %s", msg)
+                return msg
+            read_stream.receive = debug_receive  # type: ignore[attr-defined]
+            original_send = write_stream.send
+            async def debug_send(msg):
+                logger.debug("Raw outgoing JSON-RPC: %s", msg)
+                return await original_send(msg)
+            write_stream.send = debug_send  # type: ignore[attr-defined]
             logger.debug("Entering JSON-RPC run loop (server.run launching)")
             async def _run_server():
                 try:
