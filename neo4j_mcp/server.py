@@ -270,6 +270,7 @@ def parse_arguments():
     parser.add_argument("--neo4j-password", 
                        help="Neo4j password")
     parser.add_argument("--log-level", default="INFO", help="Logging level (DEBUG, INFO, WARNING, ERROR)")
+    parser.add_argument("extras", nargs="*", help=argparse.SUPPRESS)  # tolerate script name passed by uvx
     return parser.parse_args()
 
 async def main():
@@ -332,11 +333,19 @@ async def main():
             logger.debug("Entering JSON-RPC run loop (server.run launching)")
             async def _run_server():
                 try:
-                    # Run without pre-supplying InitializationOptions so the server waits
-                    # for the client's initialize request instead of exiting early.
+                    # Provide InitializationOptions (required by current mcp server API) so run loop starts.
+                    init_options = InitializationOptions(
+                        server_name="neo4j-mcp",
+                        server_version="1.0.0",
+                        capabilities=neo4j_server.server.get_capabilities(
+                            notification_options=NotificationOptions(),
+                            experimental_capabilities={},
+                        ),
+                    )
                     await neo4j_server.server.run(
                         read_stream,
                         write_stream,
+                        init_options,
                     )
                     logger.debug("server.run completed normally (no more incoming requests)")
                 except Exception as e:  # noqa: BLE001
