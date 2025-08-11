@@ -24,8 +24,8 @@ from .database import Neo4jOperations
 from .operations import SearchOperations, EntityOperations, RelationshipOperations, ObservationOperations
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.geter(__name__)
 
 # Central schema definition for runtime validation (edge MCP compliance)
 TOOL_REQUIRED_ARGS: Dict[str, List[str]] = {
