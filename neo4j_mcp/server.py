@@ -25,7 +25,7 @@ from .operations import SearchOperations, EntityOperations, RelationshipOperatio
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.geter(__name__)
+logger = logging.getLogger(__name__)
 
 # Central schema definition for runtime validation (edge MCP compliance)
 TOOL_REQUIRED_ARGS: Dict[str, List[str]] = {
