@@ -268,13 +268,18 @@ def parse_arguments():
                        help="Neo4j username")
     parser.add_argument("--neo4j-password", 
                        help="Neo4j password")
+    parser.add_argument("--log-level", default="INFO", help="Logging level (DEBUG, INFO, WARNING, ERROR)")
     return parser.parse_args()
 
 async def main():
     """Main entry point with graceful shutdown handling including SIGTERM/SIGINT (cross-platform)."""
     args = parse_arguments()    
-    if args.neo4j_uri is None:        
-        print("Trying to get values from the environment.")
+    # Adjust log level early (overwriting initial basicConfig if needed)
+    logging.getLogger().setLevel(getattr(logging, getattr(args, 'log_level', 'INFO').upper(), logging.INFO))
+    if args.neo4j_uri is None:
+        # IMPORTANT: Avoid printing to stdout before JSON-RPC handshake.
+        # Use logger so output goes to stderr and doesn't corrupt protocol.
+        logger.info("Loading Neo4j connection parameters from environment (.env if present)")
         load_dotenv(override=True)
         args.neo4j_uri = os.getenv('NEO4J_URI')
         args.neo4j_username = os.getenv('NEO4J_USERNAME')
@@ -309,6 +314,7 @@ async def main():
     _install_signal_handlers(stop_event, loop)
     
     try:
+        # NOTE: Do not write to stdout directly (only JSON-RPC). All diagnostics must go via logging (stderr).
         async with stdio_server() as (read_stream, write_stream):
             server_task = asyncio.create_task(
                 neo4j_server.server.run(
