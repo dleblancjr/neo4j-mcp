@@ -144,9 +144,7 @@ class Neo4jMCPServer:
                 content=[{"type": "text", "text": f"Unknown tool: {name}"}],
                 isError=True
             )
-        
-    # Log once handlers have been set up (useful to confirm readiness before initialize)
-    logger.debug("All tool handlers registered; awaiting client initialize request...")
+        logger.debug("All tool handlers registered; awaiting client initialize request...")
 
     async def connect_neo4j(self, arguments: Dict[str, Any]) -> CallToolResult:
         """Connect or reconnect to Neo4j applying force semantics.
